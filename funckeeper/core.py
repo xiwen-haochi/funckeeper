@@ -463,7 +463,6 @@ class FuncKeeper:
 
                 try:
                     result = func(*args, **kwargs)
-
                     record = {
                         "func_name": func.__name__,
                         "module_path": inspect.getmodule(func).__file__,
@@ -472,7 +471,7 @@ class FuncKeeper:
                         "dependencies": deps,
                         "args": json.dumps(self._serialize_args(args)),
                         "kwargs": json.dumps(self._serialize_args(kwargs)),
-                        "tags": tags or [],
+                        "tags": ",".join(tags) if tags else "",
                         "status": "success",
                         "return_value": json.dumps(self._serialize_args(result)),
                         "error_type": None,
@@ -493,7 +492,7 @@ class FuncKeeper:
                         "dependencies": deps,
                         "args": json.dumps(self._serialize_args(args)),
                         "kwargs": json.dumps(self._serialize_args(kwargs)),
-                        "tags": tags or [],
+                        "tags": ",".join(tags) if tags else "",
                         "status": "error",
                         "return_value": None,
                         "error_type": type(e).__name__,
@@ -583,8 +582,6 @@ class FuncKeeper:
     def _save_record(self, record: Dict):
         """保存执行记录到数据库"""
         # 确保tags是正确的JSON格式
-        if isinstance(record.get("tags"), list):
-            record["tags"] = json.dumps(record["tags"])
 
         # 确保dependencies是正确的JSON格式
         if isinstance(record.get("dependencies"), dict):
@@ -640,7 +637,18 @@ class FuncKeeper:
         start_date: datetime = None,
         end_date: datetime = None,
     ) -> List[Dict]:
-        """搜索执行记录"""
+        """搜索执行记录
+
+        Args:
+            keyword (str, optional): 搜索关键词，可匹配函数名、源代码、文档说明或错误信息
+            tags (List[str], optional): 标签列表，用于按标签筛选记录
+            status (str, optional): 执行状态筛选
+            start_date (datetime, optional): 开始日期，用于按时间范围筛选
+            end_date (datetime, optional): 结束日期，用于按时间范围筛选
+
+        Returns:
+            List[Dict]: 符合条件的执行记录列表
+        """
         conditions = []
         params = []
 
@@ -829,18 +837,43 @@ class FuncKeeper:
             output.append(f"\n依赖解析错误: {str(e)}")
 
         # 标签信息
-        try:
-            tags = json.loads(record["tags"])
-            if isinstance(tags, list) and tags:  # 确保tags是列表类型
-                output.append("\n=== 标签 ===")
-                output.append(", ".join(tags))  # 直接连接标签列表
-        except Exception as e:
-            output.append(f"\n标签解析错误: {str(e)}")
+        output.append(f"\n=== 标签 ===: {record['tags']}")
+        # try:
+        #     tags = json.loads(record["tags"])
+        #     if isinstance(tags, list) and tags:  # 确保tags是列表类型
+        #         output.append("\n=== 标签 ===")
+        #         output.append(", ".join(tags))  # 直接连接标签列表
+        # except Exception as e:
+        #     output.append(f"\n标签解析错误: {str(e)}")
 
         return "\n".join(output)
 
     def get_record_detail(self, record_id: int) -> Optional[Dict]:
-        """获取执行记录的详细信息"""
+        """获取执行记录的详细信息
+        
+        Args:
+            record_id (int): 要获取详细信息的记录ID
+            
+        Returns:
+            Optional[Dict]: 包含记录详细信息的字典,如果记录不存在则返回None。
+            返回字典包含以下字段:
+                - id: 记录ID
+                - func_name: 函数名
+                - module_path: 模块路径 
+                - doc_string: 函数文档字符串
+                - source_code: 函数源代码
+                - timestamp: 执行时间戳
+                - execution_time: 执行耗时
+                - status: 执行状态
+                - args: 位置参数
+                - kwargs: 关键字参数
+                - return_value: 返回值
+                - error_type: 错误类型(如果有)
+                - error_message: 错误信息(如果有)
+                - error_traceback: 错误堆栈(如果有)
+                - dependencies: 依赖信息
+                - tags: 标签
+        """
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
@@ -874,6 +907,11 @@ class FuncKeeper:
                 "dependencies": record["dependencies"],
                 "tags": record["tags"],
             }
+            if detail["return_value"]:
+                try:
+                    detail["return_value"] = json.loads(detail["return_value"])
+                except:
+                    pass
 
             # 打印格式化输出
             print(self._format_record_detail(detail))
@@ -905,7 +943,11 @@ class FuncKeeper:
             }
 
     def print_function_info(self, func_name: str):
-        """打印函数信息，包括源代码、文档和依赖"""
+        """打印函数信息，包括源代码、文档和依赖
+        
+        Args:
+            func_name (str): 要查询的函数名称
+        """
         with sqlite3.connect(self.db_path) as conn:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute(
@@ -1062,7 +1104,22 @@ class FuncKeeper:
     def export_data(
         self, data: Any, export_type: str, output_dir: str = "exports"
     ) -> Path:
-        """导出数据"""
+        """导出数据
+        
+        Args:
+            data (Any): 要导出的数据,可以是详情字典、统计信息字典或记录列表
+            export_type (str): 导出类型,可选值:
+                - detail: 导出详情
+                - statistics: 导出统计信息 
+                - list: 导出记录列表
+            output_dir (str, optional): 输出目录路径,默认为"exports"
+            
+        Returns:
+            Path: 导出文件的完整路径
+            
+        Raises:
+            ValueError: 当export_type不是支持的类型时抛出
+        """
         output_path = Path(output_dir).resolve()
         output_path.mkdir(parents=True, exist_ok=True)
 
@@ -1086,3 +1143,4 @@ class FuncKeeper:
 
         export_method(data, str(filepath))
         return filepath
+

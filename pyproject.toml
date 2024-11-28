@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "funckeeper"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Python function execution recorder and tracker"
 authors = ["'fkl' <18654198191@163.com>"]
 license = "MIT"
