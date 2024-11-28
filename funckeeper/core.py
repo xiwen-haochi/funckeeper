@@ -9,15 +9,13 @@ import inspect
 import traceback
 import json
 import ast
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from functools import wraps
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import textwrap
-from pprint import pprint
 from abc import ABC, abstractmethod
 import csv
-import os
 
 
 class Exporter(ABC):
@@ -372,8 +370,26 @@ class HtmlExporter(Exporter):
 
 
 class FuncKeeper:
-    def __init__(self, db_path: str = "funckeeper.db"):
-        self.db_path = db_path
+    def __init__(self, db_path: str = "funckeeper.db", timezone_offset: float = None):
+        """
+        初始化FuncKeeper
+
+        Args:
+            db_path: 数据库文件路径
+            timezone_offset: 时区偏移量（小时），如 8.0 表示 UTC+8，-5.0 表示 UTC-5
+                           默认为None，使用系统本地时区
+        """
+        self.db_path = Path(db_path).resolve()
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # 设置时区
+        if timezone_offset is not None:
+            offset = timedelta(hours=timezone_offset)
+            self.timezone = timezone(offset)
+        else:
+            # 使用系统本地时区
+            self.timezone = datetime.now(timezone.utc).astimezone().tzinfo
+
         self._init_db()
 
     def _init_db(self):
@@ -424,6 +440,10 @@ class FuncKeeper:
                         "ALTER TABLE function_records ADD COLUMN doc_string TEXT"
                     )
                     print("数据库已更新：添加了 doc_string 列")
+
+    def _get_current_timestamp(self) -> str:
+        """获取当前时区的时间戳"""
+        return datetime.now(self.timezone).isoformat()
 
     def __call__(self, tags: List[str] = None):
         def decorator(func):
@@ -570,6 +590,9 @@ class FuncKeeper:
         if isinstance(record.get("dependencies"), dict):
             record["dependencies"] = json.dumps(record["dependencies"])
 
+        # 使用指定时区的时间戳
+        record["timestamp"] = self._get_current_timestamp()
+
         with sqlite3.connect(self.db_path) as conn:
             columns = ", ".join(record.keys())
             placeholders = ", ".join(["?" for _ in record])
@@ -645,10 +668,16 @@ class FuncKeeper:
             params.append(status)
 
         if start_date:
+            # 确保start_date有时区信息
+            if start_date.tzinfo is None:
+                start_date = start_date.replace(tzinfo=self.timezone)
             conditions.append("timestamp >= ?")
             params.append(start_date.isoformat())
 
         if end_date:
+            # 确保end_date有时区信息
+            if end_date.tzinfo is None:
+                end_date = end_date.replace(tzinfo=self.timezone)
             conditions.append("timestamp <= ?")
             params.append(end_date.isoformat())
 
@@ -678,12 +707,15 @@ class FuncKeeper:
 
             results = []
             for row in cursor.fetchall():
+                # 解析时间戳并添加时区信息
+                timestamp = self._parse_timestamp(row["timestamp"])
+
                 result = {
                     "id": row["id"],
                     "function": row["func_name"],
                     "documentation": row["doc_string"],
                     "last_execution": {
-                        "timestamp": row["timestamp"],
+                        "timestamp": timestamp.isoformat(),
                         "execution_time": f"{row['execution_time']:.4f}s",
                         "arguments": {
                             "args": json.loads(row["args"]),
@@ -715,6 +747,18 @@ class FuncKeeper:
                 print(self._format_search_result(result))
 
             return results
+
+    def _parse_timestamp(self, timestamp_str: str) -> datetime:
+        """解析时间戳字符串为datetime对象"""
+        try:
+            dt = datetime.fromisoformat(timestamp_str)
+            if dt.tzinfo is None:
+                # 如果时间戳没有时区信息，添加时区信息
+                dt = dt.replace(tzinfo=self.timezone)
+            return dt
+        except ValueError as e:
+            print(f"警告: 时间戳解析失败 ({timestamp_str}): {str(e)}")
+            return datetime.now(self.timezone)
 
     def _format_record_detail(self, record: Dict) -> str:
         """格式化详细记录信息"""
@@ -1017,28 +1061,18 @@ class FuncKeeper:
 
     def export_data(
         self, data: Any, export_type: str, output_dir: str = "exports"
-    ) -> str:
-        """
-        导出数据为HTML格式
+    ) -> Path:
+        """导出数据"""
+        output_path = Path(output_dir).resolve()
+        output_path.mkdir(parents=True, exist_ok=True)
 
-        Args:
-            data: 要导出的数据
-            export_type: 导出类型 ('detail', 'statistics', 'list')
-            output_dir: 输出目录
-
-        Returns:
-            导出文件的路径
-        """
-        # 确保输出目录存在
-        os.makedirs(output_dir, exist_ok=True)
+        # 使用当前时区的时间戳生成文件名
+        timestamp = datetime.now(self.timezone).strftime("%Y%m%d_%H%M%S")
+        filename = f"funckeeper_{export_type}_{timestamp}.html"
+        filepath = output_path / filename
 
         # 创建导出器
         exporter = HtmlExporter()
-
-        # 生成文件名
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"funckeeper_{export_type}_{timestamp}.html"
-        filepath = os.path.join(output_dir, filename)
 
         # 执行导出
         export_methods = {
@@ -1050,49 +1084,5 @@ class FuncKeeper:
         if not export_method:
             raise ValueError(f"不支持的导出类型: {export_type}")
 
-        export_method(data, filepath)
+        export_method(data, str(filepath))
         return filepath
-
-
-if __name__ == "__main__":
-    keeper = FuncKeeper("test.db")
-    # 获取所有函数的统计信息
-    @keeper(tags=["math", "division"])
-    def divide(a, b):
-        """安全除法函数"""
-        try:
-            return a / b
-        except ZeroDivisionError as e:
-            raise ValueError("除数不能为零") from e
-
-    # 测试正常情况
-    result = divide(10, 2)  # 返回 5.0
-
-    # 测试错误情况
-    try:
-        result = divide(10, 0)
-    except ValueError as e:
-        print(f"捕获到错误: {e}")
-
-    # 获取函数统计信息
-    stats = keeper.get_statistics(func_name="divide")
-    keeper.print_statistics(stats)
-    # 导出搜索结果列表
-    # results = keeper.search(keyword="除法")
-    # if results:
-    #     filepath = keeper.export_data(results, "list", "exports")
-    #     print(f"\n搜索结果已导出到: {filepath}")
-
-    # # 导出详细信息
-    # if results:
-    #     detail = keeper.get_record_detail(results[0]["id"])
-    #     if detail:  # 确保有返回值
-    #         filepath = keeper.export_data(detail, "detail", "exports")
-    #         print(f"\n详细信息已导出到: {filepath}")
-
-    # # 导出统计信息
-    # stats = keeper.get_statistics()
-    # filepath = keeper.export_data(stats, "statistics", "exports")
-    # print(f"\n统计信息已导出到: {filepath}")
-
-    # 导出统计信

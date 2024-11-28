@@ -251,6 +251,107 @@ keeper.print_statistics(stats)
 - ValueError: 1次
 - ZeroDivisionError: 1次
 ```
+### 示例 6: 导出搜索结果
+
+```python
+    keeper = FuncKeeper(r"D:\1fkl\test.db")
+
+    # 获取所有函数的统计信息
+    @keeper(tags=["math", "division"])
+    def divide(a, b):
+        """安全除法函数"""
+        try:
+            return a / b
+        except ZeroDivisionError as e:
+            raise ValueError("除数不能为零") from e
+
+    # 测试正常情况
+    result = divide(10, 2)  # 返回 5.0
+
+    # 测试错误情况
+    try:
+        result = divide(10, 0)
+    except ValueError as e:
+        print(f"捕获到错误: {e}")
+
+    # 获取函数统计信息
+    stats = keeper.get_statistics(func_name="divide")
+    keeper.print_statistics(stats)
+    # 导出搜索结果列表
+    results = keeper.search(keyword="除法")
+    if results:
+        filepath = keeper.export_data(results, "list", r"D:\1fkl\exports")
+        print(f"\n搜索结果已导出到: {filepath}")
+
+    # # 导出详细信息
+    if results:
+        detail = keeper.get_record_detail(results[0]["id"])
+        if detail:  # 确保有返回值
+            filepath = keeper.export_data(detail, "detail", "exports")
+            print(f"\n详细信息已导出到: {filepath}")
+
+    # # 导出统计信息
+    stats = keeper.get_statistics()
+    filepath = keeper.export_data(stats, "statistics", "exports")
+    print(f"\n统计信息已导出到: {filepath}")
+```
+```
+--- 记录 1 ---
+记录ID: 6
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:03:24
+耗时: 0.0084s
+调用参数: 10, 0
+错误信息: 除数不能为零
+
+--- 记录 2 ---
+记录ID: 5
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:03:23
+耗时: 0.0128s
+调用参数: 10, 2
+返回值: 5.0
+
+--- 记录 3 ---
+记录ID: 3
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:03:04
+耗时: 0.0000s
+调用参数: 10, 2
+返回值: 5.0
+
+--- 记录 4 ---
+记录ID: 4
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:03:04
+耗时: 0.0095s
+调用参数: 10, 0
+错误信息: 除数不能为零
+
+--- 记录 5 ---
+记录ID: 1
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:02:16
+耗时: 0.0114s
+调用参数: 10, 2
+返回值: 5.0
+
+--- 记录 6 ---
+记录ID: 2
+函数名: divide
+文档说明: 安全除法函数
+执行时间: 2024-11-28 06:02:16
+耗时: 0.0000s
+调用参数: 10, 0
+错误信息: 除数不能为零
+
+搜索结果已导出到: D:\1fkl\exports\funckeeper_list_20241128_140324.html
+```
 
 ### 导出html示例
 ![详情](assets/detail.png)
