@@ -1,0 +1,114 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>函数执行详情</title>
+            <style>
+                body { 
+                    font-family: Arial, sans-serif; 
+                    margin: 20px; 
+                    background-color: #f5f5f5;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .record { 
+                    margin: 20px 0; 
+                    padding: 15px;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 4px;
+                }
+                .section { 
+                    margin: 10px 0; 
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                }
+                .error { color: #dc3545; }
+                .success { color: #28a745; }
+                pre { 
+                    background: #f8f9fa; 
+                    padding: 10px; 
+                    border-radius: 4px;
+                    overflow-x: auto;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 10px 0;
+                }
+                th, td {
+                    padding: 8px;
+                    border: 1px solid #dee2e6;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f8f9fa;
+                }
+                .stats {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 10px;
+                }
+                .stat-item {
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>函数执行详情</h1>
+                
+        <div class="record">
+            <div class="section">
+                <h2>函数信息</h2>
+                <p><strong>记录ID:</strong> 10</p>
+                <p><strong>函数名:</strong> divide</p>
+                <p><strong>模块路径:</strong> d:\1fkl\funckeeper\funckeeper\core.py</p>
+                <p><strong>文档说明:</strong> 除法函数，计算 a 除以 b 的结果</p>
+                <h3>源代码:</h3>
+                <pre><code>@keeper(tags=["math", "division"])
+def divide(a: int, b: int) -> float:
+    """除法函数，计算 a 除以 b 的结果"""
+    return a / b</code></pre>
+            </div>
+            
+            <div class="section">
+                <h2>执行信息</h2>
+                <p><strong>执行时间:</strong> 2024-11-28 02:28:40</p>
+                <p><strong>耗时:</strong> 0.0035s</p>
+                <p><strong>执行状态:</strong> 
+                    <span class="success">
+                        success
+                    </span>
+                </p>
+                <p><strong>调用参数:</strong></p>
+                <pre><code>args: [10, 2]
+kwargs: {}</code></pre>
+                
+                <p><strong>返回值:</strong> 5.0</p>
+            </div>
+            
+            <div class="section">
+                <h2>依赖信息</h2>
+                <pre><code>{"imports": ["ast", "datetime.datetime", "functools.wraps", "inspect", "json", "pathlib.Path", "pprint.pprint", "sqlite3", "textwrap", "time", "traceback", "typing.Any", "typing.Dict", "typing.List", "typing.Optional"]}</code></pre>
+            </div>
+            
+            <div class="section">
+                <h2>标签</h2>
+                <p>["math", "division"]</p>
+            </div>
+        </div>
+        
+            </div>
+        </body>
+        </html>
+        

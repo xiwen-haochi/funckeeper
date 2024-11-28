@@ -1,0 +1,402 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>函数执行列表</title>
+            <style>
+                body { 
+                    font-family: Arial, sans-serif; 
+                    margin: 20px; 
+                    background-color: #f5f5f5;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                .record { 
+                    margin: 20px 0; 
+                    padding: 15px;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 4px;
+                }
+                .section { 
+                    margin: 10px 0; 
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                }
+                .error { color: #dc3545; }
+                .success { color: #28a745; }
+                pre { 
+                    background: #f8f9fa; 
+                    padding: 10px; 
+                    border-radius: 4px;
+                    overflow-x: auto;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 10px 0;
+                }
+                th, td {
+                    padding: 8px;
+                    border: 1px solid #dee2e6;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f8f9fa;
+                }
+                .stats {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 10px;
+                }
+                .stat-item {
+                    padding: 10px;
+                    background-color: #f8f9fa;
+                    border-radius: 4px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>函数执行列表</h1>
+                
+            <div class="record">
+                <h3>记录 10</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:28:40</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0035s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 11</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:28:40</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0073s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [1, 0], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="error">
+                            division by zero
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 8</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:25:49</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0110s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 7</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:25:43</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0085s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 6</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:25:24</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0084s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 5</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:23:35</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0100s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 4</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:22:28</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0062s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 3</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:20:55</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0241s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 2</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:19:11</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0129s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <div class="record">
+                <h3>记录 1</h3>
+                <table>
+                    <tr>
+                        <th>函数名</th>
+                        <td>divide</td>
+                    </tr>
+                    <tr>
+                        <th>文档说明</th>
+                        <td>除法函数，计算 a 除以 b 的结果</td>
+                    </tr>
+                    <tr>
+                        <th>执行时间</th>
+                        <td>2024-11-28 02:18:26</td>
+                    </tr>
+                    <tr>
+                        <th>耗时</th>
+                        <td>0.0149s</td>
+                    </tr>
+                    <tr>
+                        <th>参数</th>
+                        <td><pre>{'args': [10, 2], 'kwargs': {}}</pre></td>
+                    </tr>
+                    <tr>
+                        <th>结果</th>
+                        <td class="success">
+                            5.0
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            </div>
+        </body>
+        </html>
+        
