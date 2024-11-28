@@ -354,9 +354,9 @@ keeper.print_statistics(stats)
 ```
 
 ### 导出html示例
-![详情](assets/detail.png)
-![列表](assets/list.png)
-![统计](assets/tj.png)
+![详情](docs/detail.png)
+![列表](docs/list.png)
+![统计](docs/tj.png)
 
 这些示例展示了 `funckeeper` 的主要功能和使用场景，包括函数装饰、错误处理、统计分析和数据导出等特性。
 
