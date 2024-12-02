@@ -381,6 +381,7 @@ class FuncKeeper:
         """
         self.db_path = Path(db_path).resolve()
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self.db_path = str(self.db_path)
 
         # 设置时区
         if timezone_offset is not None:
